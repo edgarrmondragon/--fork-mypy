@@ -906,6 +906,12 @@ class InspectionStubGenerator(BaseStubGenerator):
             if attr == "__hash__" and value is None:
                 # special case for __hash__
                 continue
+            if _is_sentinel_object(value):
+                self.add_import_line("import typing_extensions\n")
+                static_properties.append(
+                    f"{self._indent}{attr} = typing_extensions.sentinel('{attr}')"
+                )
+                continue
             prop_type_name = self.strip_or_import(self.get_type_annotation(value))
             classvar = self.add_name("typing.ClassVar")
             static_properties.append(f"{self._indent}{attr}: {classvar}[{prop_type_name}] = ...")
