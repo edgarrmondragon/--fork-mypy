@@ -567,7 +567,11 @@ class InspectionStubGenerator(BaseStubGenerator):
         - https://docs.python.org/3.15/builtins/functions.html#sentinel.__name__
         - https://docs.python.org/3.15/builtins/functions.html#sentinel.__module__
         """
-        if (name := getattr(sentinel_obj, "__name__", None)) and name.isidentifier():
+        if (
+            (name := getattr(sentinel_obj, "__name__", None))
+            and name.isidentifier()
+            and not keyword.iskeyword(name)
+        ):
             return f"{sentinel_obj.__module__}.{name}"
 
         return None
