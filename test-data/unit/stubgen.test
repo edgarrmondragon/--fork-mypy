@@ -94,6 +94,21 @@ from _typeshed import Incomplete
 _MISSING = typing_extensions.sentinel('_MISSING')
 def f(x: Incomplete | _MISSING = ...): ...
 
+[case testDefaultArgSentinelInClass_inspect]
+from typing_extensions import sentinel
+
+class Cls:
+    MISSING = sentinel('MISSING')
+
+    def f(self, x=MISSING): ...
+[out]
+import typing_extensions
+from _typeshed import Incomplete
+
+class Cls:
+    MISSING = typing_extensions.sentinel('MISSING')
+    def f(self, x: Incomplete | MISSING = ...): ...
+
 [case testDefaultArgSentinelCrossModule_inspect]
 from other import MISSING
 
@@ -108,18 +123,20 @@ from _typeshed import Incomplete
 
 def f(x: Incomplete | other.MISSING = ...): ...
 
-[case testDefaultArgSentinelNotValidIdentifier_inspect]
+[case testDefaultArgSentinelNotValidName_inspect]
 from typing_extensions import sentinel
 
-_MISSING = sentinel('not an identifier')
+NOT_IDENTIFIER = sentinel('not an identifier')
+KEYWORD = sentinel('from')
 
-def f(x=_MISSING): ...
+def f(x=NOT_IDENTIFIER, y=KEYWORD): ...
 [out]
 import typing_extensions
 from _typeshed import Incomplete
 
-_MISSING = typing_extensions.sentinel('_MISSING')
-def f(x: Incomplete = ...): ...
+NOT_IDENTIFIER = typing_extensions.sentinel('NOT_IDENTIFIER')
+KEYWORD = typing_extensions.sentinel('KEYWORD')
+def f(x: Incomplete = ..., y: Incomplete = ...): ...
 
 [case testPreserveFunctionAnnotation]
 def f(x: Foo) -> Bar: ...
